@@ -17,12 +17,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,11 +52,56 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(VISIBLE);
-                server();
+                jsonObject();
             }
         });
 
     }
+
+    //===========================================================================
+
+
+
+
+    //============================================================================
+    //===========================================================================
+
+    private void jsonObject(){
+
+        String url = "http://192.168.0.122/myproject/index.php";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("pass","12345");
+             jsonObject.put("email","mafi@gmail.com");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                progressBar.setVisibility(GONE);
+                textView.setText(response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressBar.setVisibility(GONE);
+                textView.setText("Error: " + error.getMessage());
+
+            }
+        });
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        requestQueue.add(jsonObjectRequest);
+
+
+    }
+
+    //===========================================================================
 
     //========================================================================
     private void server(){
