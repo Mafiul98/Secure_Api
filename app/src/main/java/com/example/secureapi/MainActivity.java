@@ -52,15 +52,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(VISIBLE);
-                jsonObject();
+                jsonArray();
             }
         });
 
     }
 
     //===========================================================================
+    private void jsonArray() {
+        String url = "http://192.168.0.122/myproject/index.php";
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("pass", "12345");
+            jsonObject.put("email", "mafiul@gmail.com");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
 
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, url, jsonArray, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        requestQueue.add(jsonArrayRequest);
+    }
 
 
     //============================================================================
